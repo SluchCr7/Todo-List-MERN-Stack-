@@ -20,9 +20,9 @@ export const NoteContextProvider = ({ children }) => {
         fetchNotes();
     }, []);
 
-    const addNote = async (note) => {
+    const addNote = async (note , description = '') => {
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`, note, {
+            await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`, {note , description}, {
                 headers: {
                     "Content-Type": "application/json",
                 },

@@ -8,7 +8,8 @@ export const UserContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isLogin , setIsLogin] = useState(false);
     const [isAuthChecked, setIsAuthChecked] = useState(false);
-
+    const [showLoginMenu , setShowLoginMenu] = useState(false)
+    const [showRegisterMenu , setShowRegisterMenu] = useState(false)
     const login = async (email, password) => {
         try {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/login`, {
@@ -82,7 +83,7 @@ export const UserContextProvider = ({ children }) => {
     setIsAuthChecked(true);
   }, []);
     return (
-        <UserContext.Provider value={{ user, setUser , isLogin , setIsLogin , login , Logout , registerNewUser , isAuthChecked }}>
+        <UserContext.Provider value={{ user,showRegisterMenu , setShowRegisterMenu,showLoginMenu , setShowLoginMenu, setUser , isLogin , setIsLogin , login , Logout , registerNewUser , isAuthChecked }}>
             {children}
         </UserContext.Provider>
     );

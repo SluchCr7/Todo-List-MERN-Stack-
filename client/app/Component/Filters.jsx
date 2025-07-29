@@ -52,6 +52,14 @@ const Filters = ({ onFilterChange }) => {
         <option value="Medium">⚡ Medium</option>
         <option value="Low">🌿 Low</option>
       </select>
+      <button
+        onClick={() => {
+          setSearch('')
+          setStatus('all')
+          setPriority('all')
+          handleChange()
+        }}
+        className='bg-[#1E1E2F] text-[#F1F1F5] border border-gray-600 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7048E8]'>Reset Filters</button>
     </div>
   )
 }

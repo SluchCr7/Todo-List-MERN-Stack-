@@ -6,14 +6,18 @@ const InputAdd = () => {
   const { addNote } = useNote()
   const [title, setTitle] = useState('')
   const [error, setError] = useState('')
-
+  const [description , setDescription] = useState('')
   const handleAdd = () => {
     if (!title.trim()) {
       setError("Title is required")
       return
     }
-
-    addNote(title)
+    if (description === '') {
+      addNote(title)
+    }
+    else {
+      addNote(title, description)
+    }
     setTitle('')
     setError('')
   }
@@ -27,6 +31,14 @@ const InputAdd = () => {
         placeholder="Enter task title..."
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        className="w-full bg-[#1E1E2F] text-[#F1F1F5] placeholder-gray-400 px-4 py-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#7048E8] transition-all duration-200"
+      />
+      <textarea
+        rows="4"
+        type="text"
+        placeholder="Enter task description..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
         className="w-full bg-[#1E1E2F] text-[#F1F1F5] placeholder-gray-400 px-4 py-3 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#7048E8] transition-all duration-200"
       />
 
