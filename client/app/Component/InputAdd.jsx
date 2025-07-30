@@ -18,7 +18,7 @@ const InputAdd = () => {
     else {
       addNote(title, description)
     }
-    setTitle('')
+    // setTitle('')
     setError('')
   }
 

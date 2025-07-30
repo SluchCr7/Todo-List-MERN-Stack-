@@ -21,11 +21,25 @@ const userSchema = new mongooese.Schema({
     isVerify : {
         type: Boolean,
         default: false,
-    }
+    },
+    profilePhoto:{
+        type : Object, 
+        default:{
+            url: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+            publicId : null
+        }
+    },
 },{
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject : {virtuals: true}
 });
 
+userSchema.virtual("taskes", {
+    ref: "Note",
+    localField: "_id",
+    foreignField: "userId"
+})
 const User = mongooese.model("User", userSchema);
 
 const validateNewUser = (user) => {

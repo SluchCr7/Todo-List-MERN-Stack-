@@ -2,12 +2,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useAlert } from "./AlertContext";
+import { useUser } from "./UserContext";
 
 const NoteContext = createContext();
 
 export const NoteContextProvider = ({ children }) => {
     const [notes, setNotes] = useState([]);
-    const {showAlert} = useAlert()
+    const { showAlert } = useAlert()
+    const {user} = useUser()
     useEffect(() => {
         const fetchNotes = async () => {
             try {
@@ -18,16 +20,16 @@ export const NoteContextProvider = ({ children }) => {
             }
         };
         fetchNotes();
-    }, []);
+    }, [notes]);
 
-    const addNote = async (note , description = '') => {
+    const addNote = async (title , description = '') => {
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`, {note , description}, {
+            await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note/add/${user._id}`, {title , description}, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            setNotes((prevNotes) => [...prevNotes, note]);
+            setNotes((prevNotes) => [...prevNotes, {title , description}]);
             showAlert("Note added successfully")
         } catch (error) {
             console.error("Error adding note:", error);
@@ -46,7 +48,7 @@ export const NoteContextProvider = ({ children }) => {
 
     const updatePriority = async (id, priority) => {
         try {
-            const { data: updatedNote } = await axios.put(
+            await axios.put(
                 `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/priority/${id}`,
                 { priority },
                 {
@@ -55,11 +57,11 @@ export const NoteContextProvider = ({ children }) => {
                     },
                 }
             );
-            setNotes((prevNotes) =>
-                prevNotes.map((note) =>
-                    note._id === id ? updatedNote : note
-                )
-            );
+            // setNotes((prevNotes) =>
+            //     prevNotes.map((note) =>
+            //         note._id === id ? updatedNote : note
+            //     )
+            // );
             showAlert(`Priority updated successfully to ${priority}`)
         } catch (error) {
             console.error("Error updating priority:", error);
@@ -68,14 +70,14 @@ export const NoteContextProvider = ({ children }) => {
 
     const makeTaskComplete = async (id) => {
         try {
-            const { data: updatedNote } = await axios.put(
+            await axios.put(
                 `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/complete/${id}`
             );
-            setNotes((prevNotes) =>
-                prevNotes.map((note) =>
-                    note._id === id ? updatedNote : note
-                )
-            );
+            // setNotes((prevNotes) =>
+            //     prevNotes.map((note) =>
+            //         note._id === id ? updatedNote : note
+            //     )
+            // );
             showAlert("Task completed successfully")
         } catch (error) {
             console.error("Error updating priority:", error);

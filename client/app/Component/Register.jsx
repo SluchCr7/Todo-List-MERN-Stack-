@@ -26,7 +26,7 @@ const Register = ({onClose}) => {
         {/* زر إغلاق */}
         {onClose && (
           <button
-            onClick={(onClose}
+            onClick={onClose}
             className="absolute top-4 right-4 text-[#A0A0B2] hover:text-red-400 text-xl transition"
             title="Close"
           >

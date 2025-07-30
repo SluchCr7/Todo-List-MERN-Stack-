@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useContext, createContext, useEffect, useState } from "react";
 import swal from "sweetalert";
+import { useAlert } from "./AlertContext";
 const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
@@ -10,6 +11,8 @@ export const UserContextProvider = ({ children }) => {
     const [isAuthChecked, setIsAuthChecked] = useState(false);
     const [showLoginMenu , setShowLoginMenu] = useState(false)
     const [showRegisterMenu , setShowRegisterMenu] = useState(false)
+    const {showAlert} = useAlert()
+
     const login = async (email, password) => {
         try {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/login`, {
@@ -18,9 +21,9 @@ export const UserContextProvider = ({ children }) => {
         });
     
         // لو نجح الدخول
-        setUser(res.data.user);
-        localStorage.setItem('TodoUser', JSON.stringify(res.data.user));
-        localStorage.setItem('loginState', 'true');
+        setUser(res.data);
+        localStorage.setItem('TodoUser', JSON.stringify(res.data));
+        localStorage.setItem('loginStateTodo', 'true');
     
         showAlert(res.data.message || 'Login successful');
     
@@ -70,7 +73,7 @@ export const UserContextProvider = ({ children }) => {
   };
   useEffect(() => {
     const storedUser = localStorage.getItem('TodoUser');
-    const loginState = localStorage.getItem('loginState');
+    const loginState = localStorage.getItem('loginStateTodo');
 
     if (storedUser && loginState === 'true') {
       const parsedUser = JSON.parse(storedUser);

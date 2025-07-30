@@ -56,7 +56,7 @@ const register = asyncHandler(async (req, res) => {
  */
 
 const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find();
+    const users = await User.find().populate('taskes');
     res.status(200).send(users);
 });
 
