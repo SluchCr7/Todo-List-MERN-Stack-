@@ -7,7 +7,7 @@ import Filters from "./Component/Filters";
 import UserProfile from "./Component/UserProfile";
 import Login from "./Component/Login";
 import Register from "./Component/Register";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 const sampleTasks = [
   { _id: "1", title: "Buy groceries", description: "Milk, Bread, Cheese", priority: "high", complete: false },
@@ -19,20 +19,14 @@ const sampleTasks = [
 
 export default function Home() {
   const { notes } = useNote();
-  const { user, users, Logout } = useUser()
-  const [selectUser, setSelectUser] = useState(null)
-
-  useEffect(() => {
-    const selectedUser = users.find(u => u._id === user._id)
-    setSelectUser(selectedUser)
-  }, [users, user])
+  const { user, users, Logout , myUser } = useUser()
   const {
     showLoginMenu, setShowLoginMenu,
     setShowRegisterMenu, showRegisterMenu,
     isAuthChecked, isLogin
   } = useUser();
 
-  // const tasks = user?.taskes.length ? user?.taskes : sampleTasks;
+  const tasks = user?.taskes ? user?.taskes : sampleTasks;
   const priorityOrder = { high: 1, medium: 2, low: 3 };
 
   const [filters, setFilters] = useState({
@@ -40,7 +34,7 @@ export default function Home() {
     status: 'all',
     priority: 'all'
   });
-  const filterTasks = selectUser?.taskes
+  const filterTasks = tasks
     .filter(task => {
       const matchesSearch = task.title.toLowerCase().includes(filters.search.toLowerCase());
       const matchesStatus =

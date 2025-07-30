@@ -10,17 +10,17 @@ export const NoteContextProvider = ({ children }) => {
     const [notes, setNotes] = useState([]);
     const { showAlert } = useAlert()
     const {user} = useUser()
-    useEffect(() => {
-        const fetchNotes = async () => {
-            try {
-                const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`);
-                setNotes(data);
-            } catch (error) {
-                console.error("Error fetching notes:", error);
-            }
-        };
-        fetchNotes();
-    }, [notes]);
+    // useEffect(() => {
+    //     const fetchNotes = async () => {
+    //         try {
+    //             const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`);
+    //             setNotes(data);
+    //         } catch (error) {
+    //             console.error("Error fetching notes:", error);
+    //         }
+    //     };
+    //     fetchNotes();
+    // }, [notes]);
 
     const addNote = async (title , description = '') => {
         try {
@@ -29,6 +29,11 @@ export const NoteContextProvider = ({ children }) => {
                     "Content-Type": "application/json",
                 },
             });
+            const updatedUser = {
+                ...user,
+                taskes: [...user.taskes, {title , description}],
+            };
+            localStorage.setItem('TodoUser', JSON.stringify(updatedUser));
             setNotes((prevNotes) => [...prevNotes, {title , description}]);
             showAlert("Note added successfully")
         } catch (error) {

@@ -6,6 +6,7 @@ import { useAlert } from "./AlertContext";
 const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
+  
     const [user, setUser] = useState(null);
     const [isLogin , setIsLogin] = useState(false);
     const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -13,17 +14,37 @@ export const UserContextProvider = ({ children }) => {
     const [showRegisterMenu , setShowRegisterMenu] = useState(false)
     const {showAlert} = useAlert()
     const [users, setUsers] = useState([])
+    const [myUser, setMyUser] = useState(null)
+    // useEffect(() => {
+    //   const fetchUsers = async () => {
+    //     try {
+    //       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth`);
+    //       setUsers(data);
+    //     } catch (error) {
+    //       console.error("Error fetching users:", error);
+    //     }
+    //   }
+    //   fetchUsers();
+    // }, []);
     useEffect(() => {
-      const fetchUsers = async () => {
+      const fetchUser = async () => {
         try {
-          const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth`);
-          setUsers(data);
+          const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/me`, {
+            headers: {
+              "Authorization": `Bearer ${user?.token}`,
+            },
+          });
+          setMyUser(data);
         } catch (error) {
-          console.error("Error fetching users:", error);
+          console.error("Error fetching user:", error);
         }
+      };
+
+      if (user?.token) {
+        fetchUser();
       }
-      fetchUsers();
-    }, []);
+    }, [user]); 
+
     const login = async (email, password) => {
         try {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/login`, {
@@ -95,7 +116,7 @@ export const UserContextProvider = ({ children }) => {
     setIsAuthChecked(true);
   }, []);
     return (
-        <UserContext.Provider value={{ user,users,showRegisterMenu , setShowRegisterMenu,showLoginMenu , setShowLoginMenu, setUser , isLogin , setIsLogin , login , Logout , registerNewUser , isAuthChecked }}>
+        <UserContext.Provider value={{ user,myUser,users,showRegisterMenu , setShowRegisterMenu,showLoginMenu , setShowLoginMenu, setUser , isLogin , setIsLogin , login , Logout , registerNewUser , isAuthChecked }}>
             {children}
         </UserContext.Provider>
     );
