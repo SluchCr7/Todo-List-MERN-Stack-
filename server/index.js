@@ -5,7 +5,7 @@ const connectDB = require('./config/db');
 const { errorhandler } = require('./Middelwares/errorHandler')
 require('dotenv').config()
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: process.env.DOMAIN_NAME
 }))
 app.use(express.json())
 
