@@ -65,9 +65,8 @@ export const UserContextProvider = ({ children }) => {
       if (willLogout) {
         setUser(null);
         setIsLogin(false);
-        localStorage.removeItem('user');
-        localStorage.removeItem('loginState');
-        disconnectSocket();
+        localStorage.removeItem('TodoUser');
+        localStorage.removeItem('loginStateTodo');
         // window.location.href = '/Pages/Login';
       }
     });
@@ -77,7 +76,6 @@ export const UserContextProvider = ({ children }) => {
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/register`, {name, email, password });
       showAlert(res.data.message);
-      setTimeout(() => window.location.href = '/Pages/Login', 2000);
     } catch (err) {
       swal('Oops!', err.response?.data?.message || 'Registration failed', 'error');
     }
