@@ -19,13 +19,20 @@ const sampleTasks = [
 
 export default function Home() {
   const { notes } = useNote();
+  const { user, users, Logout } = useUser()
+  const [selectUser, setSelectUser] = useState(null)
+
+  useEffect(() => {
+    const selectedUser = users.find(u => u._id === user._id)
+    setSelectUser(selectedUser)
+  }, [users, user])
   const {
     showLoginMenu, setShowLoginMenu,
     setShowRegisterMenu, showRegisterMenu,
     isAuthChecked, isLogin
   } = useUser();
 
-  const tasks = notes.length ? notes : sampleTasks;
+  const tasks = user?.taskes.length ? user?.taskes : sampleTasks;
   const priorityOrder = { high: 1, medium: 2, low: 3 };
 
   const [filters, setFilters] = useState({
