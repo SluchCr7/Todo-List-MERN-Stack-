@@ -31,7 +31,7 @@ const UserProfile = () => {
       {/* صورة البروفايل */}
       <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#7048E8] shadow-lg">
         <Image
-          src={user?.profilePhoto?.url || '/default.png'}
+          src={user?.profilePhoto?.url}
           alt="Profile"
           width={96}
           height={96}

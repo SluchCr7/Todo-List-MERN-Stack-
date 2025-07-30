@@ -32,7 +32,7 @@ export default function Home() {
     isAuthChecked, isLogin
   } = useUser();
 
-  const tasks = user?.taskes.length ? user?.taskes : sampleTasks;
+  // const tasks = user?.taskes.length ? user?.taskes : sampleTasks;
   const priorityOrder = { high: 1, medium: 2, low: 3 };
 
   const [filters, setFilters] = useState({
@@ -40,14 +40,13 @@ export default function Home() {
     status: 'all',
     priority: 'all'
   });
-
-  const filterTasks = tasks
+  const filterTasks = selectUser?.taskes
     .filter(task => {
       const matchesSearch = task.title.toLowerCase().includes(filters.search.toLowerCase());
       const matchesStatus =
         filters.status === 'all' ||
-        (filters.status === 'complete' && task.complete) ||
-        (filters.status === 'incomplete' && !task.complete);
+        (filters.status === 'complete' && task.isComplete) ||
+        (filters.status === 'incomplete' && !task.isComplete);
       const matchesPriority =
         filters.priority === 'all' ||
         task.priority === filters.priority;
