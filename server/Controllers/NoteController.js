@@ -1,4 +1,3 @@
-
 const { Note, validateNewNote } = require('../Models/Note')
 const asyncHandler = require("express-async-handler");
 

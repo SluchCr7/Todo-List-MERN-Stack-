@@ -1,13 +1,18 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { useUser } from '../Context/UserContext'
 
 const UserProfile = () => {
-  const { user } = useUser()
+  const { user , users } = useUser()
+  const [selectUser , setSelectUser] = useState(null)
 
-  const completedCount = user?.taskes?.filter(task => task?.isComplete)?.length || 0
-  const totalCount = user?.taskes?.length || 0
+  useEffect(() => {
+    const selectedUser = users.find(u => u._id === user._id);
+    setSelectUser(selectedUser);
+  }, [users, user]);
+  const completedCount = selectUser?.taskes?.filter(task => task?.isComplete)?.length || 0
+  const totalCount = selectUser?.taskes?.length || 0
 
   return (
     <div className="w-full bg-gradient-to-r from-[#2C2C3A] to-[#1E1E2F] rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row items-center gap-6">

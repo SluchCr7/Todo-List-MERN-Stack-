@@ -93,8 +93,8 @@ export default function Home() {
 
         {/* الفلاتر وإضافة مهمة */}
         <div className="flex items-start flex-col gap-6">
-          <Filters onFilterChange={setFilters} />
           <InputAdd />
+          <Filters onFilterChange={setFilters} />
         </div>
 
         {/* المهام */}
