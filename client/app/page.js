@@ -7,7 +7,7 @@ import Filters from "./Component/Filters";
 import UserProfile from "./Component/UserProfile";
 import Login from "./Component/Login";
 import Register from "./Component/Register";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const sampleTasks = [
   { _id: "1", title: "Buy groceries", description: "Milk, Bread, Cheese", priority: "high", complete: false },
