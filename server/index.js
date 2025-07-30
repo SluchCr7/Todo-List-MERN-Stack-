@@ -3,6 +3,7 @@ const app = express()
 const cors = require('cors')
 const connectDB = require('./config/db');
 const { errorhandler } = require('./Middelwares/errorHandler')
+const path = require('path')
 require('dotenv').config()
 app.use(cors({
     origin: process.env.DOMAIN_NAME
