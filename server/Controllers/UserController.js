@@ -56,7 +56,7 @@ const register = asyncHandler(async (req, res) => {
  */
 
 const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find().populate('taskes');
+    const users = await User.find().populate('tasks');
     res.status(200).json(users);
 });
 
@@ -77,8 +77,8 @@ const deleteUserById = asyncHandler(async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
-      .populate("taskes"); // لو غيرت الاسم لـ tasks استخدم .populate("tasks")
+    const user = await User.findById(req.user._id)
+      .populate("tasks"); // لو غيرت الاسم لـ tasks استخدم .populate("tasks")
     
     if (!user) return res.status(404).json({ message: "User not found" });
 

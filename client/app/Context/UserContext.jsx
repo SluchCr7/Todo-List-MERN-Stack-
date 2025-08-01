@@ -7,14 +7,13 @@ import { useAlert } from "./AlertContext";
 const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // هذا سيكون دائما المستخدم النهائي بعد getMe
+  const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [showLoginMenu, setShowLoginMenu] = useState(false);
   const [showRegisterMenu, setShowRegisterMenu] = useState(false);
   const { showAlert } = useAlert();
 
-  // ⬇️ تسجيل الدخول
   const login = async (email, password) => {
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/login`, {
@@ -22,27 +21,21 @@ export const UserContextProvider = ({ children }) => {
         password,
       });
 
-      // حفظ التوكن فقط
-      const tokenData = res.data;
-      localStorage.setItem("TodoToken", tokenData.token);
+      const token = res.data.token;
+      localStorage.setItem("TodoToken", token);
       localStorage.setItem("loginStateTodo", "true");
 
-      showAlert(tokenData.message || "Login successful");
+      showAlert(res.data.message || "Login successful");
 
       setTimeout(() => {
         window.location.href = "/";
       }, 2000);
     } catch (err) {
       const message = err.response?.data?.message || "Login failed";
-      if (err.response?.status === 401 && err.response?.data?.emailSent) {
-        showAlert(message);
-      } else {
-        showAlert(message);
-      }
+      showAlert(message);
     }
   };
 
-  // ⬇️ تسجيل الخروج
   const Logout = () => {
     swal({
       title: "Are you sure?",
@@ -61,13 +54,10 @@ export const UserContextProvider = ({ children }) => {
     });
   };
 
-  // ⬇️ إنشاء مستخدم جديد
   const registerNewUser = async (name, email, password) => {
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/register`, {
-        name,
-        email,
-        password,
+        name, email, password
       });
       showAlert(res.data.message);
     } catch (err) {
@@ -75,22 +65,24 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
-  // ⬇️ تحميل بيانات المستخدم من /me
   const fetchUserFromMe = async () => {
     const token = localStorage.getItem("TodoToken");
-    if (!token) return;
+    if (!token) {
+      setIsAuthChecked(true);
+      return;
+    }
 
     try {
       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
+
       setUser({ ...data, token });
       setIsLogin(true);
     } catch (error) {
       console.error("Error fetching user:", error);
       setIsLogin(false);
+      setUser(null);
     } finally {
       setIsAuthChecked(true);
     }
@@ -115,11 +107,10 @@ export const UserContextProvider = ({ children }) => {
         setShowLoginMenu,
         showRegisterMenu,
         setShowRegisterMenu,
-        setUser,
-        setIsLogin,
         login,
         Logout,
         registerNewUser,
+        setUser
       }}
     >
       {children}

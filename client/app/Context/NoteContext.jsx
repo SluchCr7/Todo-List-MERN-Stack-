@@ -1,3 +1,4 @@
+
 'use client'
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -9,37 +10,50 @@ const NoteContext = createContext();
 export const NoteContextProvider = ({ children }) => {
     const [notes, setNotes] = useState([]);
     const { showAlert } = useAlert()
-    const {user} = useUser()
-    // useEffect(() => {
-    //     const fetchNotes = async () => {
-    //         try {
-    //             const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`);
-    //             setNotes(data);
-    //         } catch (error) {
-    //             console.error("Error fetching notes:", error);
-    //         }
-    //     };
-    //     fetchNotes();
-    // }, [notes]);
+    const {user , setUser} = useUser()
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note`);
+                setNotes(data);
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+            }
+        };
+        fetchNotes();
+    }, [notes]);
 
-    const addNote = async (title , description = '') => {
-        try {
-            await axios.post(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note/add/${user._id}`, {title , description}, {
+const addNote = async (title, description = '') => {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/add/${user._id}`,
+            { title, description },
+            {
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}` // إضافة التوكن إن وُجد
                 },
-            });
-            const updatedUser = {
-                ...user,
-                taskes: [...user.taskes, {title , description}]
-            };
-            localStorage.setItem('TodoUser', JSON.stringify(updatedUser));
-            setNotes((prevNotes) => [...prevNotes, {title , description}]);
-            showAlert("Note added successfully")
-        } catch (error) {
-            console.error("Error adding note:", error);
-        }
-    };
+            }
+        );
+
+        const newNote = response.data; // تأكد أن السيرفر يرجع النوت الجديد
+
+        // ✅ تحديث الملاحظات
+        setNotes((prevNotes) => [...prevNotes, newNote]);
+
+        // ✅ تحديث user.tasks
+        const updatedUser = {
+            ...user,
+            tasks: [...(user.tasks || []), newNote],
+        };
+        setUser(updatedUser); // <-- هذا مهم لتحديث السياق مباشرة
+
+        showAlert("Note added successfully");
+    } catch (error) {
+        console.error("Error adding note:", error);
+    }
+};
+
 
     const deleteNote = async (id) => {
         try {

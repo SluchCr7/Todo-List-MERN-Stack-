@@ -48,9 +48,9 @@ const Filters = ({ onFilterChange }) => {
         className="bg-[#1E1E2F] text-[#F1F1F5] border border-gray-600 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7048E8]"
       >
         <option value="all">All Priorities</option>
-        <option value="High">🔥 High</option>
-        <option value="Medium">⚡ Medium</option>
-        <option value="Low">🌿 Low</option>
+        <option value="high">🔥 High</option>
+        <option value="medium">⚡ Medium</option>
+        <option value="low">🌿 Low</option>
       </select>
       <button
         onClick={() => {

@@ -7,23 +7,25 @@ import Filters from "./Component/Filters";
 import UserProfile from "./Component/UserProfile";
 import Login from "./Component/Login";
 import Register from "./Component/Register";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const sampleTasks = [
-  { _id: "1", title: "Buy groceries", description: "Milk, Bread, Cheese", priority: "high", complete: false },
-  { _id: "2", title: "Finish project", description: "Finalize report for client", priority: "medium", complete: true },
-  { _id: "3", title: "Workout", description: "30-minute run + stretching", priority: "low", complete: false },
-  { _id: "4", title: "Read a book", description: "Continue reading 'Atomic Habits'", priority: "low", complete: false },
-  { _id: "5", title: "Team meeting", description: "Weekly sync with dev team", priority: "high", complete: true },
-];
+const sampleTasks = [ /* same as عندك */ ];
 
 export default function Home() {
-  const { user, isAuthChecked, isLogin, showLoginMenu, setShowLoginMenu, showRegisterMenu, setShowRegisterMenu } = useUser();
-
-  // ✅ استخدم user?.tasks بدل taskes
-  const tasks = user?.tasks || sampleTasks;
+  const {
+    user,
+    isAuthChecked,
+    isLogin,
+    showLoginMenu,
+    setShowLoginMenu,
+    showRegisterMenu,
+    setShowRegisterMenu
+  } = useUser();
+  useEffect(() => {
+    console.log(user)
+  },[user])
+  const tasks = Array.isArray(user?.tasks) ? user.tasks : sampleTasks;
   const priorityOrder = { high: 1, medium: 2, low: 3 };
-
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
@@ -38,7 +40,8 @@ export default function Home() {
         (filters.status === 'complete' && task.isComplete) ||
         (filters.status === 'incomplete' && !task.isComplete);
       const matchesPriority =
-        filters.priority === 'all' || task.priority === filters.priority;
+        filters.priority === 'all' ||
+        task.priority === filters.priority;
 
       return matchesSearch && matchesStatus && matchesPriority;
     })
@@ -78,7 +81,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-tr from-[#1A1A2E] to-[#1F2235] text-white px-4 sm:px-8 py-10">
       <div className="max-w-6xl mx-auto space-y-10">
-        {/* العنوان */}
         <div className="text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-2">📋 My Tasks</h1>
           <p className="text-[#9CA3AF]">Track, organize and complete your daily tasks efficiently.</p>
@@ -86,13 +88,11 @@ export default function Home() {
 
         <UserProfile />
 
-        {/* الفلاتر وإضافة مهمة */}
         <div className="flex items-start flex-col gap-6">
           <InputAdd />
           <Filters onFilterChange={setFilters} />
         </div>
 
-        {/* المهام */}
         <section>
           {filterTasks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
