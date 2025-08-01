@@ -7,7 +7,7 @@ import Filters from "./Component/Filters";
 import UserProfile from "./Component/UserProfile";
 import Login from "./Component/Login";
 import Register from "./Component/Register";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const sampleTasks = [
   { _id: "1", title: "Buy groceries", description: "Milk, Bread, Cheese", priority: "high", complete: false },
@@ -18,15 +18,10 @@ const sampleTasks = [
 ];
 
 export default function Home() {
-  const { notes } = useNote();
-  const { user, users, Logout , myUser } = useUser()
-  const {
-    showLoginMenu, setShowLoginMenu,
-    setShowRegisterMenu, showRegisterMenu,
-    isAuthChecked, isLogin
-  } = useUser();
+  const { user, isAuthChecked, isLogin, showLoginMenu, setShowLoginMenu, showRegisterMenu, setShowRegisterMenu } = useUser();
 
-  const tasks = user?.taskes ? user?.taskes : sampleTasks;
+  // ✅ استخدم user?.tasks بدل taskes
+  const tasks = user?.tasks || sampleTasks;
   const priorityOrder = { high: 1, medium: 2, low: 3 };
 
   const [filters, setFilters] = useState({
@@ -34,6 +29,7 @@ export default function Home() {
     status: 'all',
     priority: 'all'
   });
+
   const filterTasks = tasks
     .filter(task => {
       const matchesSearch = task.title.toLowerCase().includes(filters.search.toLowerCase());
@@ -42,8 +38,7 @@ export default function Home() {
         (filters.status === 'complete' && task.isComplete) ||
         (filters.status === 'incomplete' && !task.isComplete);
       const matchesPriority =
-        filters.priority === 'all' ||
-        task.priority === filters.priority;
+        filters.priority === 'all' || task.priority === filters.priority;
 
       return matchesSearch && matchesStatus && matchesPriority;
     })

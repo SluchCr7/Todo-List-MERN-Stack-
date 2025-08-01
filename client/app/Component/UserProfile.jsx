@@ -1,20 +1,17 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { useUser } from '../Context/UserContext'
-import { FiLogOut } from 'react-icons/fi' // أيقونة تسجيل الخروج
+import { FiLogOut } from 'react-icons/fi'
 
 const UserProfile = () => {
-  const { user, users, Logout , myUser } = useUser()
-  // const [selectUser, setSelectUser] = useState(null)
+  const { user, Logout } = useUser()
 
-  // useEffect(() => {
-  //   const selectedUser = users.find(u => u._id === user._id)
-  //   setSelectUser(selectedUser)
-  // }, [users, user])
+  // إذا لم يكن المستخدم محملاً بعد
+  if (!user) return null;
 
-  const completedCount = user?.taskes?.filter(task => task?.isComplete)?.length || 0
-  const totalCount = user?.taskes?.length || 0
+  const completedCount = user?.tasks?.filter(task => task?.isComplete)?.length || 0
+  const totalCount = user?.tasks?.length || 0
 
   return (
     <div className="relative w-full bg-gradient-to-r from-[#2C2C3A] to-[#1E1E2F] rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row items-center gap-6">

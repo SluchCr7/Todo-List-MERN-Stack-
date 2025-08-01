@@ -35,11 +35,12 @@ const userSchema = new mongooese.Schema({
     toObject : {virtuals: true}
 });
 
-userSchema.virtual("taskes", {
+userSchema.virtual("tasks", {
     ref: "Note",
     localField: "_id",
     foreignField: "userId"
 })
+
 const User = mongooese.model("User", userSchema);
 
 const validateNewUser = (user) => {

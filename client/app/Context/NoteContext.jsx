@@ -31,7 +31,7 @@ export const NoteContextProvider = ({ children }) => {
             });
             const updatedUser = {
                 ...user,
-                taskes: [...user.taskes, {title , description}],
+                taskes: [...user.taskes, {title , description}]
             };
             localStorage.setItem('TodoUser', JSON.stringify(updatedUser));
             setNotes((prevNotes) => [...prevNotes, {title , description}]);
