@@ -10,7 +10,7 @@ const NoteContext = createContext();
 export const NoteContextProvider = ({ children }) => {
     const [notes, setNotes] = useState([]);
     const { showAlert } = useAlert()
-    const {user , setUser} = useUser()
+    const { user, setUser } = useUser()
     useEffect(() => {
         const fetchNotes = async () => {
             try {
@@ -23,45 +23,105 @@ export const NoteContextProvider = ({ children }) => {
         fetchNotes();
     }, [notes]);
 
-const addNote = async (title, description = '') => {
-    try {
-        const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/add/${user._id}`,
-            { title, description },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}` // إضافة التوكن إن وُجد
-                },
-            }
-        );
+    const addNote = async (taskData) => {
+        try {
+            // Support both old API (title, description) and new API (full object)
+            const payload = typeof taskData === 'string'
+                ? { title: taskData, description: arguments[1] || '' }
+                : {
+                    title: taskData.title,
+                    description: taskData.description || '',
+                    category: taskData.category || 'personal',
+                    priority: taskData.priority || 'medium',
+                    reminder: taskData.reminder || null,
+                    notes: taskData.notes || ''
+                };
 
-        const newNote = response.data; // تأكد أن السيرفر يرجع النوت الجديد
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/add/${user._id}`,
+                payload,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${user.token}`
+                    },
+                }
+            );
 
-        // ✅ تحديث الملاحظات
-        setNotes((prevNotes) => [...prevNotes, newNote]);
+            const newNote = response.data;
 
-        // ✅ تحديث user.tasks
-        const updatedUser = {
-            ...user,
-            tasks: [...(user.tasks || []), newNote],
-        };
-        setUser(updatedUser); // <-- هذا مهم لتحديث السياق مباشرة
+            // Update notes
+            setNotes((prevNotes) => [...prevNotes, newNote]);
 
-        showAlert("Note added successfully");
-    } catch (error) {
-        console.error("Error adding note:", error);
-    }
-};
+            // Update user.tasks
+            const updatedUser = {
+                ...user,
+                tasks: [...(user.tasks || []), newNote],
+            };
+            setUser(updatedUser);
+
+            showAlert("Task added successfully");
+        } catch (error) {
+            console.error("Error adding note:", error);
+            showAlert("Failed to add task");
+            throw error;
+        }
+    };
 
 
     const deleteNote = async (id) => {
         try {
             await axios.delete(`${process.env.NEXT_PUBLIC_BACK_URL}/api/note/${id}`);
             setNotes(notes.filter((note) => note._id !== id));
-            showAlert("Note deleted successfully")
+
+            // Update user.tasks
+            const updatedUser = {
+                ...user,
+                tasks: (user.tasks || []).filter((task) => task._id !== id),
+            };
+            setUser(updatedUser);
+
+            showAlert("Task deleted successfully")
         } catch (error) {
             console.error("Error deleting note:", error);
+        }
+    };
+
+    const updateNote = async (id, updates) => {
+        try {
+            const response = await axios.put(
+                `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/${id}`,
+                updates,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${user.token}`
+                    },
+                }
+            );
+
+            const updatedNote = response.data;
+
+            // Update notes
+            setNotes((prevNotes) =>
+                prevNotes.map((note) =>
+                    note._id === id ? updatedNote : note
+                )
+            );
+
+            // Update user.tasks
+            const updatedUser = {
+                ...user,
+                tasks: (user.tasks || []).map((task) =>
+                    task._id === id ? updatedNote : task
+                ),
+            };
+            setUser(updatedUser);
+
+            showAlert("Task updated successfully");
+        } catch (error) {
+            console.error("Error updating note:", error);
+            showAlert("Failed to update task");
         }
     };
 
@@ -76,12 +136,7 @@ const addNote = async (title, description = '') => {
                     },
                 }
             );
-            // setNotes((prevNotes) =>
-            //     prevNotes.map((note) =>
-            //         note._id === id ? updatedNote : note
-            //     )
-            // );
-            showAlert(`Priority updated successfully to ${priority}`)
+            showAlert(`Priority updated to ${priority}`)
         } catch (error) {
             console.error("Error updating priority:", error);
         }
@@ -92,18 +147,13 @@ const addNote = async (title, description = '') => {
             await axios.put(
                 `${process.env.NEXT_PUBLIC_BACK_URL}/api/note/complete/${id}`
             );
-            // setNotes((prevNotes) =>
-            //     prevNotes.map((note) =>
-            //         note._id === id ? updatedNote : note
-            //     )
-            // );
-            showAlert("Task completed successfully")
+            showAlert("Task status updated")
         } catch (error) {
-            console.error("Error updating priority:", error);
+            console.error("Error updating task status:", error);
         }
     };
     return (
-        <NoteContext.Provider value={{ notes, setNotes, addNote, deleteNote, updatePriority , makeTaskComplete }}>
+        <NoteContext.Provider value={{ notes, setNotes, addNote, deleteNote, updateNote, updatePriority, makeTaskComplete }}>
             {children}
         </NoteContext.Provider>
     );
