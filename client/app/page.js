@@ -1,5 +1,5 @@
 'use client'
-// import { useNote } from "./Context/NoteContext";
+import { useNote } from "./Context/NoteContext";
 import { useUser } from "./Context/UserContext";
 import Note from "./Component/Note";
 import InputAdd from "./Component/InputAdd";
