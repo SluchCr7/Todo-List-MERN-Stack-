@@ -5,300 +5,158 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus,
   Sparkles,
+  Zap,
   Tag,
   Flag,
   Calendar,
   Clock,
-  FileText,
-  X,
-  ChevronDown
+  Mic,
+  ArrowRight
 } from 'lucide-react'
 
 const InputAdd = () => {
   const { addNote } = useNote()
+  const [isExpanded, setIsExpanded] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('personal')
   const [priority, setPriority] = useState('medium')
   const [reminder, setReminder] = useState('')
-  const [reminderTime, setReminderTime] = useState('')
-  const [notes, setNotes] = useState('')
-  const [error, setError] = useState('')
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const categories = [
-    { value: 'work', label: 'Work', icon: '💼', color: 'from-purple-500 to-indigo-600' },
-    { value: 'personal', label: 'Personal', icon: '👤', color: 'from-pink-500 to-rose-600' },
-    { value: 'shopping', label: 'Shopping', icon: '🛒', color: 'from-cyan-500 to-blue-600' },
-    { value: 'health', label: 'Health', icon: '💪', color: 'from-emerald-500 to-green-600' },
-    { value: 'finance', label: 'Finance', icon: '💰', color: 'from-amber-500 to-orange-600' },
-    { value: 'other', label: 'Other', icon: '📌', color: 'from-gray-500 to-slate-600' }
-  ]
-
-  const priorities = [
-    { value: 'high', label: 'High', icon: '🔥', color: 'from-red-500 to-rose-600' },
-    { value: 'medium', label: 'Medium', icon: '⚡', color: 'from-amber-500 to-orange-600' },
-    { value: 'low', label: 'Low', icon: '🌿', color: 'from-emerald-500 to-green-600' }
-  ]
-
   const handleAdd = async () => {
-    if (!title.trim()) {
-      setError("Task title is required")
-      setTimeout(() => setError(''), 3000)
-      return
-    }
+    if (!title.trim()) return
 
     setIsSubmitting(true)
-
     const taskData = {
       title: title.trim(),
       description: description.trim(),
       category,
       priority,
-      reminder: reminder ? new Date(reminder + 'T' + (reminderTime || '09:00')).toISOString() : null,
-      notes: notes.trim()
+      reminder: reminder ? new Date(reminder).toISOString() : null,
     }
 
     try {
       await addNote(taskData)
-
-      // Reset form
       setTitle('')
       setDescription('')
-      setCategory('personal')
-      setPriority('medium')
-      setReminder('')
-      setReminderTime('')
-      setNotes('')
-      setError('')
-      setShowAdvanced(false)
-    } catch (err) {
-      setError('Failed to add task. Please try again.')
-      setTimeout(() => setError(''), 3000)
+      setIsExpanded(false)
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const selectedCategory = categories.find(c => c.value === category)
-  const selectedPriority = priorities.find(p => p.value === priority)
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full glass-strong rounded-3xl p-6 lg:p-8 space-y-6 hover:shadow-2xl transition-all duration-300"
+      layout
+      className={`relative w-full z-20 transition-all duration-300 ${isExpanded ? 'mb-6' : 'mb-2'}`}
     >
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-          <Plus className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-black text-white" style={{ fontFamily: 'var(--font-space)' }}>
-            Create Task
-          </h2>
-          <p className="text-sm text-gray-400">Add a new task to your list</p>
-        </div>
-      </div>
+      {/* Glow Effect */}
+      <div className={`absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-3xl blur opacity-20 transition-opacity duration-500 ${isExpanded ? 'opacity-40' : 'opacity-20'}`} />
 
-      {/* Task Title */}
-      <div className="space-y-2">
-        <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-          <Sparkles className="w-4 h-4 text-purple-400" />
-          Task Title
-        </label>
-        <input
-          type="text"
-          placeholder="What needs to be done?"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-black/30 text-white placeholder-gray-500 px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300"
-        />
-      </div>
-
-      {/* Description */}
-      <div className="space-y-2">
-        <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-          <FileText className="w-4 h-4 text-blue-400" />
-          Description
-        </label>
-        <textarea
-          rows="3"
-          placeholder="Add more details..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full bg-black/30 text-white placeholder-gray-500 px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 resize-none"
-        />
-      </div>
-
-      {/* Category & Priority */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Category */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-            <Tag className="w-4 h-4 text-cyan-400" />
-            Category
-          </label>
-          <div className="relative">
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-black/30 text-white px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all duration-300 appearance-none cursor-pointer"
-            >
-              {categories.map(cat => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.icon} {cat.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-          </div>
-        </div>
-
-        {/* Priority */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-            <Flag className="w-4 h-4 text-orange-400" />
-            Priority
-          </label>
-          <div className="relative">
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="w-full bg-black/30 text-white px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 appearance-none cursor-pointer"
-            >
-              {priorities.map(pri => (
-                <option key={pri.value} value={pri.value}>
-                  {pri.icon} {pri.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-          </div>
-        </div>
-      </div>
-
-      {/* Advanced Options Toggle */}
-      <button
-        onClick={() => setShowAdvanced(!showAdvanced)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 group"
-      >
-        <span className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">
-          Advanced Options
-        </span>
-        <motion.div
-          animate={{ rotate: showAdvanced ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-        </motion.div>
-      </button>
-
-      {/* Advanced Options */}
-      <AnimatePresence>
-        {showAdvanced && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-4 overflow-hidden"
-          >
-            {/* Reminder */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-                  <Calendar className="w-4 h-4 text-emerald-400" />
-                  Reminder Date
-                </label>
-                <input
-                  type="date"
-                  value={reminder}
-                  onChange={(e) => setReminder(e.target.value)}
-                  className="w-full bg-black/30 text-white px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-300"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-                  <Clock className="w-4 h-4 text-emerald-400" />
-                  Reminder Time
-                </label>
-                <input
-                  type="time"
-                  value={reminderTime}
-                  onChange={(e) => setReminderTime(e.target.value)}
-                  className="w-full bg-black/30 text-white px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-300"
-                />
-              </div>
+      <div className="relative glass-strong rounded-[1.5rem] border border-white/10 overflow-hidden shadow-2xl">
+        <div className="p-2">
+          {/* Top Input Bar */}
+          <div className="flex items-center gap-3 p-2">
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-colors ${title ? 'bg-purple-500 text-white' : 'bg-white/5 text-gray-500'}`}>
+              {isSubmitting ? <Sparkles className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
             </div>
 
-            {/* Additional Notes */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-                <FileText className="w-4 h-4 text-pink-400" />
-                Additional Notes
-              </label>
-              <textarea
-                rows="3"
-                placeholder="Any extra information..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-black/30 text-white placeholder-gray-500 px-4 py-3.5 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all duration-300 resize-none"
-              />
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value)
+                if (!isExpanded) setIsExpanded(true)
+              }}
+              placeholder="What needs to be done?"
+              onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+              className="flex-1 bg-transparent text-lg font-medium text-white placeholder-gray-500 focus:outline-none"
+            />
+
+            {/* Quick Actions (Visible when not expanded or typing) */}
+            <div className="flex gap-2">
+              {!isExpanded && (
+                <button onClick={() => setIsExpanded(true)} className="p-2 hover:bg-white/10 rounded-xl text-gray-400 text-xs font-bold border border-white/5">
+                  CMD+K
+                </button>
+              )}
+              {isExpanded && (
+                <button
+                  onClick={handleAdd}
+                  disabled={!title.trim()}
+                  className="p-2 bg-white text-black rounded-xl hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
 
-      {/* Error Message */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-2 px-4 py-3 bg-red-500/20 border border-red-500/30 rounded-xl"
-          >
-            <X className="w-5 h-5 text-red-400" />
-            <p className="text-sm font-medium text-red-300">{error}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Expanded Controls */}
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 px-2 pb-2 space-y-4 border-t border-white/5 mt-2">
 
-      {/* Submit Button */}
-      <button
-        onClick={handleAdd}
-        disabled={isSubmitting}
-        className="w-full group relative px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white shadow-lg hover:shadow-purple-500/50 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <span className="relative z-10 flex items-center justify-center gap-2">
-          {isSubmitting ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Creating...
-            </>
-          ) : (
-            <>
-              <Plus className="w-5 h-5" />
-              Add Task
-            </>
-          )}
-        </span>
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </button>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Add details, notes, or subtasks..."
+                    rows={2}
+                    className="w-full bg-transparent text-sm text-gray-300 placeholder-gray-600 focus:outline-none resize-none mx-2 mb-2"
+                  />
 
-      {/* Quick Stats */}
-      <div className="flex items-center justify-center gap-4 pt-2">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5">
-          <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${selectedCategory?.color}`} />
-          <span className="text-xs font-medium text-gray-400">{selectedCategory?.label}</span>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5">
-          <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${selectedPriority?.color}`} />
-          <span className="text-xs font-medium text-gray-400">{selectedPriority?.label} Priority</span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {/* Priority Selector */}
+                    <div className="flex bg-[#0a0a0f]/50 p-1 rounded-xl gap-1">
+                      {['low', 'medium', 'high'].map(p => (
+                        <button
+                          key={p}
+                          onClick={() => setPriority(p)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all ${priority === p ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'
+                            }`}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="w-px h-8 bg-white/10 mx-1" />
+
+                    {/* Category Selector */}
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="bg-[#0a0a0f]/50 text-gray-300 text-sm px-3 py-1.5 rounded-xl border border-white/10 focus:outline-none cursor-pointer hover:bg-white/5"
+                    >
+                      <option value="personal">👤 Personal</option>
+                      <option value="work">💼 Work</option>
+                      <option value="shopping">🛒 Shopping</option>
+                      <option value="health">💪 Health</option>
+                      <option value="finance">💰 Finance</option>
+                    </select>
+
+                    {/* Date Picker */}
+                    <div className="relative">
+                      <input
+                        type="datetime-local"
+                        value={reminder}
+                        onChange={(e) => setReminder(e.target.value)}
+                        className="bg-[#0a0a0f]/50 text-gray-300 text-xs px-3 py-2 rounded-xl border border-white/10 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>

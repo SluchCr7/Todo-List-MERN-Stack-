@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { useUser } from '../Context/UserContext'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Mail, Lock, LogIn, Sparkles, Eye, EyeOff } from 'lucide-react'
+import { X, Mail, Lock, LogIn, Sparkles, Eye, EyeOff, ArrowRight } from 'lucide-react'
 
 const Login = ({ onClose }) => {
   const [email, setEmail] = useState("")
@@ -25,6 +25,7 @@ const Login = ({ onClose }) => {
     try {
       await login(email, password)
       setError("")
+      onClose()
     } catch (err) {
       setError("Invalid credentials")
       setTimeout(() => setError(""), 3000)
@@ -38,152 +39,118 @@ const Login = ({ onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0f]/80 backdrop-blur-md"
     >
+      <div className="absolute inset-0" onClick={onClose} />
+
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: "spring", duration: 0.5 }}
-        className="glass-strong w-full max-w-md rounded-3xl shadow-2xl relative overflow-hidden"
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="relative w-full max-w-md bg-[#18181b] border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-pink-500/10 pointer-events-none" />
+        {/* Glow Effects */}
+        <div className="absolute -top-20 -right-20 w-60 h-60 bg-purple-600/20 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-blue-600/20 rounded-full blur-[80px] pointer-events-none" />
 
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors group"
-        >
-          <X className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-        </button>
+        <div className="relative p-8">
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-        {/* Content */}
-        <div className="relative z-10 p-8 lg:p-10">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
-              <LogIn className="w-8 h-8 text-white" />
+          <div className="text-center mb-8 mt-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-500 shadow-lg shadow-purple-500/20 mb-6">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-space)' }}>
+            <h2 className="text-3xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-space)' }}>
               Welcome Back
             </h2>
-            <p className="text-gray-400">Sign in to continue to TaskFlow</p>
+            <p className="text-gray-400">Enter your credentials to access your workspace</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Input */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-                <Mail className="w-4 h-4 text-purple-400" />
-                Email Address
-              </label>
-              <div className="relative">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Email</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
                 <input
                   type="email"
-                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-black/30 text-white placeholder-gray-500 px-4 py-3.5 pl-11 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300"
+                  placeholder="name@example.com"
+                  className="w-full bg-[#0a0a0f]/50 border border-white/10 rounded-xl px-12 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
                 />
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               </div>
             </div>
 
-            {/* Password Input */}
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-                <Lock className="w-4 h-4 text-pink-400" />
-                Password
-              </label>
-              <div className="relative">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Password</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-black/30 text-white placeholder-gray-500 px-4 py-3.5 pl-11 pr-11 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all duration-300"
+                  placeholder="••••••••"
+                  className="w-full bg-[#0a0a0f]/50 border border-white/10 rounded-xl px-12 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
                 />
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
-            {/* Error Message */}
             <AnimatePresence>
               {error && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2 px-4 py-3 bg-red-500/20 border border-red-500/30 rounded-xl"
+                  className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium"
                 >
-                  <X className="w-5 h-5 text-red-400 flex-shrink-0" />
-                  <p className="text-sm font-medium text-red-300">{error}</p>
+                  {error}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full group relative px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white shadow-lg hover:shadow-purple-500/50 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-white text-black rounded-xl font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-white/5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="w-5 h-5" />
-                    Sign In
-                  </>
-                )}
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              ) : (
+                <>
+                  Sign In <ArrowRight className="w-5 h-5" />
+                </>
+              )}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-[#1e1e2e] text-gray-400">or</span>
-            </div>
+          <div className="mt-8 text-center">
+            <p className="text-gray-500 text-sm">
+              Don't have an account?{' '}
+              <button
+                onClick={() => {
+                  setShowLoginMenu(false)
+                  setShowRegisterMenu(true)
+                }}
+                className="text-white font-bold hover:underline decoration-purple-500 underline-offset-4"
+              >
+                Create Account
+              </button>
+            </p>
           </div>
-
-          {/* Sign Up Link */}
-          <p className="text-center text-sm text-gray-400">
-            Don't have an account?{" "}
-            <button
-              onClick={() => {
-                setShowLoginMenu(false);
-                setShowRegisterMenu(true);
-              }}
-              className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-300 hover:to-pink-300 transition-all"
-            >
-              Create Account
-            </button>
-          </p>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl -z-10" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl -z-10" />
       </motion.div>
     </motion.div>
   )

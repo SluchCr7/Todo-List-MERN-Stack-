@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useUser } from '../Context/UserContext'
 import { motion } from 'framer-motion'
-import { LogOut, CheckCircle, ListTodo, TrendingUp, Award } from 'lucide-react'
+import { LogOut, CheckCircle2, TrendingUp, Trophy, Sparkles } from 'lucide-react'
 
 const UserProfile = () => {
   const { user, Logout } = useUser()
@@ -16,85 +16,79 @@ const UserProfile = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="relative w-full glass-strong rounded-3xl p-6 lg:p-8 shadow-2xl overflow-hidden"
+      className="relative group w-full"
     >
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-pink-500/10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6">
-        {/* Profile Image */}
-        <div className="relative">
-          <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl overflow-hidden border-2 border-purple-500/50 shadow-lg">
-            <Image
-              src={user?.profilePhoto?.url || '/default-avatar.png'}
-              alt="Profile"
-              width={96}
-              height={96}
-              className="object-cover w-full h-full"
-            />
-          </div>
-          {/* Status Indicator */}
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full border-2 border-[#1e1e2e] flex items-center justify-center">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-          </div>
-        </div>
+      <div className="relative overflow-hidden rounded-3xl md:rounded-[2rem] glass-strong border border-white/10 p-1">
+        <div className="relative z-10 p-5 md:p-6 flex flex-col md:flex-row items-center gap-6">
 
-        {/* User Info */}
-        <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl lg:text-3xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-space)' }}>
-            {user?.name || 'User'}
-          </h2>
-
-          <p className="text-sm text-gray-400 mb-4">
-            {user?.email || 'user@example.com'}
-          </p>
-
-          {/* Stats */}
-          <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30">
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-300">{completedCount} Done</span>
+          {/* Avatar Section */}
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden ring-4 ring-white/5 shadow-2xl">
+              <Image
+                src={user?.profilePhoto?.url || '/default-avatar.png'}
+                alt="Profile"
+                width={100}
+                height={100}
+                className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-700"
+              />
             </div>
-
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/15 border border-blue-500/30">
-              <ListTodo className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-semibold text-blue-300">{totalCount} Total</span>
-            </div>
-
-            {totalCount > 0 && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30">
-                <TrendingUp className="w-4 h-4 text-purple-400" />
-                <span className="text-xs font-semibold text-purple-300">{completionRate}%</span>
+            {/* Level Badge */}
+            <div className="absolute -bottom-2 -right-2 bg-[#0a0a0f] p-1 rounded-full">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center border border-white/10">
+                <Trophy className="w-4 h-4 text-white" />
               </div>
-            )}
+            </div>
           </div>
+
+          {/* User Details */}
+          <div className="flex-1 text-center md:text-left space-y-2">
+            <div>
+              <motion.h2
+                className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-white"
+                style={{ fontFamily: 'var(--font-space)' }}
+              >
+                {user?.name || 'Explorer'}
+              </motion.h2>
+              <p className="text-sm font-medium text-purple-200/60 font-mono tracking-wide">
+                {user?.email}
+              </p>
+            </div>
+
+            {/* Mini Stats Grid */}
+            <div className="flex items-center justify-center md:justify-start gap-3 mt-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-xs font-bold text-emerald-100">{completedCount} Done</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                <span className="text-xs font-bold text-purple-100">{totalCount} Tasks</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-pink-500/10 border border-pink-500/20">
+                <TrendingUp className="w-3.5 h-3.5 text-pink-400" />
+                <span className="text-xs font-bold text-pink-100">{completionRate}%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Logout Action */}
+          <button
+            onClick={Logout}
+            className="md:self-start p-3 rounded-full hover:bg-white/5 text-gray-400 hover:text-red-400 transition-all duration-300 group/btn"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+          </button>
         </div>
 
-        {/* Logout Button */}
-        <button
-          onClick={Logout}
-          className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 text-red-400 hover:text-red-300 font-medium transition-all duration-300"
-        >
-          <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-          <span className="hidden sm:inline">Logout</span>
-        </button>
+        {/* Decorative Grid Background */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
       </div>
-
-      {/* Achievement Badge (if high completion rate) */}
-      {completionRate >= 80 && totalCount >= 5 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 }}
-          className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 shadow-lg"
-        >
-          <Award className="w-4 h-4 text-white" />
-          <span className="text-xs font-bold text-white">High Achiever!</span>
-        </motion.div>
-      )}
     </motion.div>
   )
 }
