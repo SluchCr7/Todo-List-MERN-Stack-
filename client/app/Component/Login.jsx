@@ -67,7 +67,7 @@ const Login = ({ onClose }) => {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
               <LogIn className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-space)' }}>
               Welcome Back
             </h2>
             <p className="text-gray-400">Sign in to continue to TaskFlow</p>

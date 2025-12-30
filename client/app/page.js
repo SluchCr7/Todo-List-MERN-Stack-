@@ -127,7 +127,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                style={{ fontFamily: 'var(--font-space)' }}
               >
                 <span className="gradient-text">TaskFlow</span>
               </motion.h1>
@@ -230,7 +230,7 @@ export default function Home() {
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
             <div>
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black mb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black mb-3" style={{ fontFamily: 'var(--font-space)' }}>
                 <span className="gradient-text">My Workspace</span>
               </h1>
               <p className="text-lg text-gray-400">

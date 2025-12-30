@@ -82,7 +82,7 @@ const Register = ({ onClose }) => {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 mb-4">
               <UserPlus className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <h2 className="text-3xl lg:text-4xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-space)' }}>
               Create Account
             </h2>
             <p className="text-gray-400">Join TaskFlow and get organized</p>

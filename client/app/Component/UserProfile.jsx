@@ -44,7 +44,7 @@ const UserProfile = () => {
 
         {/* User Info */}
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl lg:text-3xl font-black text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          <h2 className="text-2xl lg:text-3xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-space)' }}>
             {user?.name || 'User'}
           </h2>
 

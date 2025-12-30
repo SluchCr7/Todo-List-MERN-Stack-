@@ -2,12 +2,12 @@
 import React, { useState } from 'react'
 import { useNote } from '../Context/NoteContext'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Plus, 
-  Sparkles, 
-  Tag, 
-  Flag, 
-  Calendar, 
+import {
+  Plus,
+  Sparkles,
+  Tag,
+  Flag,
+  Calendar,
   Clock,
   FileText,
   X,
@@ -62,7 +62,7 @@ const InputAdd = () => {
 
     try {
       await addNote(taskData)
-      
+
       // Reset form
       setTitle('')
       setDescription('')
@@ -96,7 +96,7 @@ const InputAdd = () => {
           <Plus className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-black text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          <h2 className="text-2xl font-black text-white" style={{ fontFamily: 'var(--font-space)' }}>
             Create Task
           </h2>
           <p className="text-sm text-gray-400">Add a new task to your list</p>
